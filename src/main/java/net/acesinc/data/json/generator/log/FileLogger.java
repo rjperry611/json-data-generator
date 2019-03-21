@@ -27,7 +27,12 @@ public class FileLogger implements EventLogger {
     private String filePrefix;
     private String fileExtension;
 
-    public FileLogger(Map<String, Object> props) throws IOException {
+    public FileLogger() {
+        super();
+    }
+
+    @Override
+    public void setLoggerProps(Map<String, Object> props) throws IOException {
         String outputDir = (String) props.get(OUTPUT_DIRECTORY_PROP_NAME);
         outputDirectory = new File(outputDir);
         if (!outputDirectory.exists()) {
@@ -45,7 +50,7 @@ public class FileLogger implements EventLogger {
     public void logEvent(String event, Map<String, Object> producerConfig) {
         logEvent(event);
     }
-    
+
     private void logEvent(String event) {
         try {
             File f = File.createTempFile(filePrefix, fileExtension, outputDirectory);
@@ -59,6 +64,11 @@ public class FileLogger implements EventLogger {
     @Override
     public void shutdown() {
         //we don't need to shut anything down
+    }
+
+    @Override
+    public String getName() {
+        return "file";
     }
 
 }

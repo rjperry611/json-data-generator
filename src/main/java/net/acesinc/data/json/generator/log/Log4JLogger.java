@@ -22,11 +22,20 @@ public class Log4JLogger implements EventLogger {
     private static final Logger dataLogger = LogManager.getLogger("data-logger");
     private ObjectMapper mapper = new ObjectMapper();
 
+    public Log4JLogger() {
+        super();
+    }
+
+    @Override
+    public void setLoggerProps(Map<String, Object> props) throws Exception {
+
+    }
+
     @Override
     public void logEvent(String event, Map<String, Object> producerConfig) {
         logEvent(event);
     }
-    
+
     private void logEvent(String event) {
         try {
             Object theValue = null;
@@ -46,6 +55,11 @@ public class Log4JLogger implements EventLogger {
     @Override
     public void shutdown() {
         //nothing to shutdown
+    }
+
+    @Override
+    public String getName() {
+        return "logger";
     }
 
 }

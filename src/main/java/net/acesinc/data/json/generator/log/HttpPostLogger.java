@@ -35,7 +35,12 @@ public class HttpPostLogger implements EventLogger {
     private String url;
     private CloseableHttpClient httpClient;
 
-    public HttpPostLogger(Map<String, Object> props) throws NoSuchAlgorithmException {
+    public HttpPostLogger() {
+        super();
+    }
+
+    @Override
+    public void setLoggerProps(Map<String, Object> props) throws NoSuchAlgorithmException {
         this.url = (String) props.get(URL_PROP_NAME);
         SSLConnectionSocketFactory sf = new SSLConnectionSocketFactory(SSLContext.getDefault(), new NoopHostnameVerifier());
         this.httpClient = HttpClientBuilder.create().setSSLSocketFactory(sf).build();
@@ -45,7 +50,7 @@ public class HttpPostLogger implements EventLogger {
     public void logEvent(String event, Map<String, Object> producerConfig) {
         logEvent(event);
     }
-    
+
     private void logEvent(String event) {
         try {
             HttpPost request = new HttpPost(url);
@@ -91,4 +96,10 @@ public class HttpPostLogger implements EventLogger {
             //oh well
         }
     }
+
+    @Override
+    public String getName() {
+        return "http-post";
+    }
+
 }

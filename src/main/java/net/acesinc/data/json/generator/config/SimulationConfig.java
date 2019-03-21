@@ -17,7 +17,9 @@ import java.util.Map;
 public class SimulationConfig {
     private List<WorkflowConfig> workflows;
     private List<Map<String, Object>> producers;
-    
+    private List<String> customEventLoggers = new ArrayList<>();
+
+
     /**
      * @return the workflows
      */
@@ -54,4 +56,13 @@ public class SimulationConfig {
     public void setProducers(List<Map<String, Object>> producers) {
         this.producers = producers;
     }
+
+    public List<String> getCustomEventLoggers() {
+        return this.customEventLoggers;
+    }
+
+    public void setCustomEventLoggers(List<String> customEventLoggers) {
+        this.customEventLoggers = customEventLoggers;
+    }
+
 }

@@ -1,5 +1,5 @@
 /*
- * 
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -34,52 +34,57 @@ public class PulsarLogger implements EventLogger {
 
     public static final String PULSAR_SERVICE_URL_PROP_NAME = "broker.server";
     public static final String PULSAR_SERVICE_URL_PORT_PROP_NAME = "broker.port";
-    
+
     private static final Logger log = LogManager.getLogger(PulsarLogger.class);
-    
-    private final String topic;
-    private final boolean sync;
-    private final boolean flatten;
-    private final PulsarClient pulsarClient;
+
+    private String topic;
+    private boolean sync;
+    private boolean flatten;
+    private PulsarClient pulsarClient;
     private Producer producer;
     private JsonUtils jsonUtils;
     StringBuilder pulsarURL = new StringBuilder("pulsar://");
-    
-    public PulsarLogger(Map<String, Object> props) throws PulsarClientException {
-        
+
+    public PulsarLogger() {
+        super();
+    }
+
+    @Override
+    public void setLoggerProps(Map<String, Object> props) throws PulsarClientException {
+
         String brokerHost = (String) props.get(PULSAR_SERVICE_URL_PROP_NAME);
         Integer brokerPort = (Integer) props.get(PULSAR_SERVICE_URL_PORT_PROP_NAME);
 
         pulsarURL.append(brokerHost);
         pulsarURL.append(":");
         pulsarURL.append(brokerPort);
-        
+
         this.topic = (String) props.get("topic");
-        
+
         if (props.get("sync") != null) {
             this.sync = (Boolean) props.get("sync");
         } else {
             this.sync = false;
         }
-        
+
         if (props.get("flatten") != null) {
             this.flatten = (Boolean) props.get("flatten");
         } else {
             this.flatten = false;
         }
-        
+
         this.pulsarClient = new PulsarClientImpl(pulsarURL.toString(), new ClientConfiguration());
         this.producer = pulsarClient.createProducer(topic);
-        
+
         this.jsonUtils = new JsonUtils();
-        
+
     }
-    
+
     @Override
     public void logEvent(String event, Map<String, Object> producerConfig) {
-        
+
         String output = event;
-        
+
         if (flatten) {
             try {
                 output = jsonUtils.flattenJson(event);
@@ -88,7 +93,7 @@ public class PulsarLogger implements EventLogger {
                 return;
             }
         }
-        
+
         if (sync) {
             try {
                 producer.send(output.getBytes());
@@ -103,14 +108,19 @@ public class PulsarLogger implements EventLogger {
 
     @Override
     public void shutdown() {
-        
+
         try {
             producer.close();
             pulsarClient.close();
         } catch (final Exception ex) {
-            
+
         }
 
+    }
+
+    @Override
+    public String getName() {
+        return "pulsar";
     }
 
 }

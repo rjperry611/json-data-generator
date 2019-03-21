@@ -18,7 +18,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  */
 public class MqttLogger implements EventLogger {
     private static final Logger log = LogManager.getLogger(MqttLogger.class);
-    
+
     /* Constants fpr Properties names */
     private static final String PRODUCER_TYPE_NAME = "mqtt";
     private static final String BROKER_SERVER_PROP_NAME = "broker.server";
@@ -32,17 +32,22 @@ public class MqttLogger implements EventLogger {
     /* Constants for default values */
     private static final String DEFAULT_CLIENT_ID     = "JsonGenerator";
     private static final int DEFAULT_QOS = 2;
-    
+
     /* Instance properties */
-    private final MqttClient mqttClient;
-    private final String topic;
-    private final int qos;
-    
-    public MqttLogger(Map<String, Object> props) throws MqttException {
+    private MqttClient mqttClient;
+    private String topic;
+    private int qos;
+
+    public MqttLogger() {
+        super();
+    }
+
+    @Override
+    public void setLoggerProps(Map<String, Object> props) throws MqttException {
         String brokerHost = (String) props.get(BROKER_SERVER_PROP_NAME);
         Integer brokerPort = (Integer) props.get(BROKER_PORT_PROP_NAME);
         String brokerAddress = brokerHost + ":" + brokerPort.toString();
-        
+
         String clientId = (String) props.get(CLIENT_ID_PROP_NAME);
         String username = (String)props.get(USERNAME_PROP_NAME);
         String password = (String)props.get(PASSWORD_PROP_NAME);
@@ -50,7 +55,7 @@ public class MqttLogger implements EventLogger {
         topic = (String) props.get(TOPIC_PROP_NAME);
         Integer _qos = (Integer) props.get(QOS_PROP_NAME);
         qos = null == _qos ? DEFAULT_QOS : _qos;
-        
+
         mqttClient = new MqttClient(brokerAddress,
                 null == clientId ? DEFAULT_CLIENT_ID : clientId);
         MqttConnectOptions connOpts = new MqttConnectOptions();
@@ -79,7 +84,7 @@ public class MqttLogger implements EventLogger {
         }
         logEvent(event, null == _topic ? topic : _topic, null == _qos ? qos : _qos);
     }
-    
+
     /**
      *
      * @param event the value of event
@@ -108,4 +113,10 @@ public class MqttLogger implements EventLogger {
             }
         }
     }
+
+    @Override
+    public String getName() {
+        return "mqtt";
+    }
+
 }
