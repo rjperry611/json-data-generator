@@ -416,7 +416,7 @@ exampleWorkflow.json:
 		    },
 		    "message": "Entered Building 1"
 		}],
-        "producerConfig" {
+        "producerConfig": {
         },
         "duration": 0
     },{
