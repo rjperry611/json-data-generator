@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.acesinc.data.json.generator.log;
 
@@ -17,22 +17,24 @@ import com.microsoft.azure.sdk.iot.device.Message;
  */
 public final class AzureIoTHubLogger implements EventLogger {
 
-	private final DeviceClient deviceClient;
-	
-	/**
-	 * @param props
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 */
-	public AzureIoTHubLogger(final Map<String, Object> props) throws URISyntaxException, IOException {
-		
-		super();
-		
-		this.deviceClient = new DeviceClient((String)props.get("connectionString"), 
-				IotHubClientProtocol.valueOf((String)props.get("protocol")));
-		this.deviceClient.open();
-	}
-	
+	private DeviceClient deviceClient;
+
+	public AzureIoTHubLogger() {
+        super();
+    }
+
+    /**
+     * @param props
+     * @throws URISyntaxException
+     * @throws IOException
+     */
+    @Override
+    public void setLoggerProps(final Map<String, Object> props) throws URISyntaxException, IOException {
+	    this.deviceClient = new DeviceClient((String) props.get("connectionString"),
+	        IotHubClientProtocol.valueOf((String) props.get("protocol")));
+	    this.deviceClient.open();
+    }
+
 	/**
 	 * @param deviceClient
 	 */
@@ -46,7 +48,7 @@ public final class AzureIoTHubLogger implements EventLogger {
 	 */
 	@Override
 	public void logEvent(String event, Map<String, Object> producerConfig) {
-		
+
 		this.deviceClient.sendEventAsync(new Message(event), null, null);
 	}
 
@@ -55,7 +57,7 @@ public final class AzureIoTHubLogger implements EventLogger {
 	 */
 	@Override
 	public void shutdown() {
-		
+
 		if (this.deviceClient != null) {
 			try {
 				this.deviceClient.closeNow();
@@ -64,6 +66,11 @@ public final class AzureIoTHubLogger implements EventLogger {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public String getName() {
+	    return "iothub";
 	}
 
 }

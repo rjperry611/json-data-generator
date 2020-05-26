@@ -37,7 +37,12 @@ public class KinesisLogger implements EventLogger {
     // The monotonically increasing sequence number we will put in the data of each record
     final AtomicLong sequenceNumber = new AtomicLong(0);
 
-    public KinesisLogger(Map<String, Object> props) {
+    public KinesisLogger() {
+        super();
+    }
+
+    @Override
+    public void setLoggerProps(Map<String, Object> props) {
         this.streamName = (String) props.get("stream");
         String region = (String) props.get("region");
         String roleARN = (String) props.get("roleARN");
@@ -115,5 +120,10 @@ public class KinesisLogger implements EventLogger {
         log.info("Kinesis Logger shutdown.");
         long totalTimeElasped = System.currentTimeMillis() - startTimeFull;
         log.info("Events Published : " +  sequenceNumber + " events in " + (totalTimeElasped / 1000) + " secs");
+    }
+
+    @Override
+    public String getName() {
+        return "kinesis";
     }
 }

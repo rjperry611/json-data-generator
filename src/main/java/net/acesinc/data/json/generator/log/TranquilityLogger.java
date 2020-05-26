@@ -60,34 +60,39 @@ public class TranquilityLogger implements EventLogger {
     public static final String FLATTEN_PROP_NAME = "flatten";
     public static final String SYNC_PROP_NAME = "sync";
 
-    private final String indexService;
-    private final String firehosePattern;
-    private final String discoveryPath;
-    private final String dataSourceName;
-    private final String dimensionNames;
-    private final String geoSpatialDims;
-    private final String timestampName;
-    private final String timestampFormat; //default is auto
-    private final String segmentGranularity; //default is hour
-    private final String queryGranularity; //default is minute
+    private String indexService;
+    private String firehosePattern;
+    private String discoveryPath;
+    private String dataSourceName;
+    private String dimensionNames;
+    private String geoSpatialDims;
+    private String timestampName;
+    private String timestampFormat; //default is auto
+    private String segmentGranularity; //default is hour
+    private String queryGranularity; //default is minute
 
-    private final String zookeeperHost;
-    private final Integer zookeeperPort;
-    private final boolean flatten; //default is true
-    private final boolean sync; //default is false
+    private String zookeeperHost;
+    private Integer zookeeperPort;
+    private boolean flatten; //default is true
+    private boolean sync; //default is false
 
-    private final List<String> dimensions;
+    private List<String> dimensions;
     private DruidDimensions druidDimensions;
-    private final List<AggregatorFactory> aggregators;
-    private final Timestamper<Map<String, Object>> timestamper;
-    private final CuratorFramework curator;
-    private final TimestampSpec timestampSpec;
-    private final Service<List<Map<String, Object>>, Integer> druidService;
+    private List<AggregatorFactory> aggregators;
+    private Timestamper<Map<String, Object>> timestamper;
+    private CuratorFramework curator;
+    private TimestampSpec timestampSpec;
+    private Service<List<Map<String, Object>>, Integer> druidService;
 
     private JsonUtils jsonUtils;
     private ObjectMapper mapper;
 
-    public TranquilityLogger(Map<String, Object> props) {
+    public TranquilityLogger() {
+        super();
+    }
+
+    @Override
+    public void setLoggerProps(Map<String, Object> props) {
         this.jsonUtils = new JsonUtils();
         this.mapper = new ObjectMapper();
 
@@ -200,7 +205,7 @@ public class TranquilityLogger implements EventLogger {
     public void logEvent(String event, Map<String, Object> producerConfig) {
         logEvent(event);
     }
-    
+
     private void logEvent(String event) {
         try {
             String output = event;
@@ -241,6 +246,11 @@ public class TranquilityLogger implements EventLogger {
         } catch (Exception ex) {
             log.error("Error shutting down Tranquility Logger", ex);
         }
+    }
+
+    @Override
+    public String getName() {
+        return "tranquility";
     }
 
 }

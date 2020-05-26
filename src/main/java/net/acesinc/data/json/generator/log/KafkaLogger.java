@@ -28,14 +28,19 @@ public class KafkaLogger implements EventLogger {
     public static final String BROKER_PORT_PROP_NAME = "broker.port";
     public static final String KERBEROS_CONF = "kerberos";
 
-    private final KafkaProducer<String, String> producer;
-    private final String topic;
-    private final boolean sync;
-    private final boolean flatten;
-    private final Properties props = new Properties();
+    private KafkaProducer<String, String> producer;
+    private String topic;
+    private boolean sync;
+    private boolean flatten;
+    private Properties props = new Properties();
     private JsonUtils jsonUtils;
 
-    public KafkaLogger(Map<String, Object> props) {
+    public KafkaLogger() {
+        super();
+    }
+
+    @Override
+    public void setLoggerProps(Map<String, Object> props) {
         String brokerHost = (String) props.get(BROKER_SERVER_PROP_NAME);
         Integer brokerPort = (Integer) props.get(BROKER_PORT_PROP_NAME);
 
@@ -110,6 +115,11 @@ public class KafkaLogger implements EventLogger {
     @Override
     public void shutdown() {
         producer.close();
+    }
+
+    @Override
+    public String getName() {
+        return "kafka";
     }
 
 }

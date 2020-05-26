@@ -51,7 +51,12 @@ public class FileLogger implements EventLogger {
     private String lastDateAdjustedFileName = "";
     private boolean firstEvent = true;
 
-    public FileLogger(Map<String, Object> props) throws IOException {
+    public FileLogger() {
+        super();
+    }
+
+    @Override
+    public void setLoggerProps(Map<String, Object> props) throws IOException {
         String outputDir = (String) props.get(OUTPUT_DIRECTORY_PROP_NAME);
         outputDirectory = new File(outputDir);
         if (!outputDirectory.exists()) {
@@ -176,6 +181,11 @@ public class FileLogger implements EventLogger {
         } catch (IOException e) {
             log.error(e);
         }
+    }
+
+    @Override
+    public String getName() {
+        return "file";
     }
 
 }

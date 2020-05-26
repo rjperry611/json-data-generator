@@ -18,16 +18,20 @@ public class NatsLogger implements EventLogger {
     public static final String NATS_SERVER_PROP_NAME = "broker.server";
     public static final String NATS_PORT_PROP_NAME = "broker.port";
 
-    private final String topic;
-    private final boolean sync;
-    private final boolean flatten;
+    private String topic;
+    private boolean sync;
+    private boolean flatten;
     private JsonUtils jsonUtils;
     private Nats nats;
     private NatsConnector natsConnector = new NatsConnector();
     StringBuilder natsURL = new StringBuilder("nats://");
 
+    public NatsLogger() {
+        super();
+    }
 
-    public NatsLogger(Map<String, Object> props) {
+    @Override
+    public void setLoggerProps(Map<String, Object> props) {
         String brokerHost = (String) props.get(NATS_SERVER_PROP_NAME);
         Integer brokerPort = (Integer) props.get(NATS_PORT_PROP_NAME);
 
@@ -48,7 +52,7 @@ public class NatsLogger implements EventLogger {
     public void logEvent(String event, Map<String, Object> producerConfig) {
         logEvent(event);
     }
-    
+
     private void logEvent(String event) {
         String output = event;
         if (flatten) {
@@ -67,5 +71,10 @@ public class NatsLogger implements EventLogger {
     @Override
     public void shutdown() {
         nats.close();
+    }
+
+    @Override
+    public String getName() {
+        return "nats";
     }
 }
