@@ -14,5 +14,11 @@ import java.util.Map;
  */
 public interface EventLogger {
     public void logEvent(String event, Map<String, Object> producerConfig);
+
     public void shutdown();
+
+    public String getName();
+
+    public void setLoggerProps(Map<String, Object> props) throws Exception;
+
 }

@@ -35,7 +35,7 @@ public class TypeHandlerFactory {
     private Map<String, Class> typeHandlerNameMap;
     private Map<String, TypeHandler> typeHandlerCache;
 
-    private static final ThreadLocal<TypeHandlerFactory> localInstance = new ThreadLocal<TypeHandlerFactory>(){
+    private static final ThreadLocal<TypeHandlerFactory> localInstance = new ThreadLocal<TypeHandlerFactory>() {
         protected TypeHandlerFactory initialValue() {
             return new TypeHandlerFactory();
         }
@@ -53,13 +53,14 @@ public class TypeHandlerFactory {
 
     /**
      * Allows the type handler factory to be configured from the WorkflowConfig.
-     * This will only configure itself once per thread. Any additional call
-     * to config will be ignored.
+     * This will only configure itself once per thread. Any additional call to
+     * config will be ignored.
+     * 
      * @param workflowConfig
      */
     public void configure(WorkflowConfig workflowConfig) {
-        if(!configured) {
-            for(String packageName : workflowConfig.getCustomTypeHandlers()) {
+        if (!configured) {
+            for (String packageName : workflowConfig.getCustomTypeHandlers()) {
                 scanForTypeHandlers(packageName);
             }
             configured = true;
@@ -70,7 +71,7 @@ public class TypeHandlerFactory {
         Reflections reflections = new Reflections(packageName);
         Set<Class<? extends TypeHandler>> subTypes = reflections.getSubTypesOf(TypeHandler.class);
         for (Class type : subTypes) {
-            //first, make sure we aren't trying to create an abstract class
+            // first, make sure we aren't trying to create an abstract class
             if (Modifier.isAbstract(type.getModifiers())) {
                 continue;
             }
@@ -82,16 +83,19 @@ public class TypeHandlerFactory {
                 String typeHandlerName = (String) nameMethod.invoke(o);
                 typeHandlerNameMap.put(typeHandlerName, type);
                 log.debug("Discovered TypeHandler [ " + typeHandlerName + "," + type.getName() + " ]");
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
-                log.warn("Error instantiating TypeHandler class [ " + type.getName() + " ]. It will not be available during processing.", ex);
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException
+                    | IllegalArgumentException | InvocationTargetException ex) {
+                log.warn("Error instantiating TypeHandler class [ " + type.getName()
+                        + " ]. It will not be available during processing.", ex);
             }
         }
     }
 
-    public TypeHandler getTypeHandler(String name, Map<String, Object> knownValues, String currentContext) throws IllegalArgumentException {
+    public TypeHandler getTypeHandler(String name, Map<String, Object> knownValues, String currentContext)
+            throws IllegalArgumentException {
         if (name.contains("(")) {
             String typeName = name.substring(0, name.indexOf("("));
-            String args = name.substring(name.indexOf("(") + 1, name.lastIndexOf(")"));
+            String args = name.substring(name.indexOf("(") + 1, name.indexOf(")"));
             String[] helperArgs = {};
             if (!args.isEmpty()) {
                 helperArgs = args.split(",");
@@ -110,12 +114,13 @@ public class TypeHandlerFactory {
                     Object refPropValue = knownValues.get(refPropName);
                     if (refPropValue != null) {
                         if (Date.class.isAssignableFrom(refPropValue.getClass())) {
-                            resolvedArgs.add(BaseDateType.INPUT_DATE_FORMAT.get().format((Date)refPropValue));
+                            resolvedArgs.add(BaseDateType.INPUT_DATE_FORMAT.get().format((Date) refPropValue));
                         } else {
                             resolvedArgs.add(refPropValue.toString());
                         }
                     } else {
-                        log.warn("Sorry, unable to reference property [ " + refPropName + " ]. Maybe it hasn't been generated yet?");
+                        log.warn("Sorry, unable to reference property [ " + refPropName
+                                + " ]. Maybe it hasn't been generated yet?");
                     }
                 } else {
                     resolvedArgs.add(arg);
@@ -127,7 +132,7 @@ public class TypeHandlerFactory {
                 if (handlerClass != null) {
                     try {
                         handler = (TypeHandler) handlerClass.newInstance();
-                        handler.setLaunchArguments(resolvedArgs.toArray(new String[]{}));
+                        handler.setLaunchArguments(resolvedArgs.toArray(new String[] {}));
 
                         typeHandlerCache.put(typeName, handler);
                     } catch (InstantiationException | IllegalAccessException ex) {
@@ -136,12 +141,12 @@ public class TypeHandlerFactory {
 
                 }
             } else {
-                handler.setLaunchArguments(resolvedArgs.toArray(new String[]{}));
+                handler.setLaunchArguments(resolvedArgs.toArray(new String[] {}));
             }
 
             return handler;
         } else {
-            //not a type handler
+            // not a type handler
             return null;
         }
     }
@@ -151,7 +156,7 @@ public class TypeHandlerFactory {
         for (String item : list) {
             newList.add(item.trim());
         }
-        return newList.toArray(new String[]{});
+        return newList.toArray(new String[] {});
     }
 
     public static void main(String[] args) {

@@ -18,11 +18,12 @@ public class WorkflowConfig {
     private String workflowFilename;
     private int instances = 1;
     private List<String> customTypeHandlers = new ArrayList<>();
+
     /**
      * @return the workflowName
      */
     public String getWorkflowName() {
-        return workflowName;
+        return this.workflowName;
     }
 
     /**
@@ -36,7 +37,7 @@ public class WorkflowConfig {
      * @return the workflowFilename
      */
     public String getWorkflowFilename() {
-        return workflowFilename;
+        return this.workflowFilename;
     }
 
     /**
@@ -47,7 +48,7 @@ public class WorkflowConfig {
     }
 
     public int getInstances() {
-        return instances;
+        return this.instances;
     }
 
     public void setInstances(int instances) {
@@ -55,11 +56,10 @@ public class WorkflowConfig {
     }
 
     public List<String> getCustomTypeHandlers() {
-        return customTypeHandlers;
+        return this.customTypeHandlers;
     }
 
     public void setCustomTypeHandlers(List<String> customTypeHandlers) {
         this.customTypeHandlers = customTypeHandlers;
     }
-
 }

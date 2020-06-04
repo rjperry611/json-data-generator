@@ -22,15 +22,15 @@ public class WorkflowStep {
     private long iterations = -1;
 
     public WorkflowStep() {
-        config = new ArrayList<Map<String, Object>>();
-        producerConfig = new HashMap<>() ;
+        this.config = new ArrayList<Map<String, Object>>();
+        this.producerConfig = new HashMap<>();
     }
 
     /**
      * @return the duration
      */
     public long getDuration() {
-        return duration;
+        return this.duration;
     }
 
     /**
@@ -44,7 +44,7 @@ public class WorkflowStep {
      * @return the config
      */
     public List<Map<String, Object>> getConfig() {
-        return config;
+        return this.config;
     }
 
     /**
@@ -54,11 +54,11 @@ public class WorkflowStep {
         this.config = config;
     }
 
-        /**
+    /**
      * @return the producerConfig
      */
     public Map<String, Object> getProducerConfig() {
-        return producerConfig;
+        return this.producerConfig;
     }
 
     /**
@@ -69,7 +69,7 @@ public class WorkflowStep {
     }
 
     public long getIterations() {
-        return iterations;
+        return this.iterations;
     }
 
     public void setIterations(long iterations) {
