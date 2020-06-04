@@ -43,6 +43,7 @@ The `Simulation Configuration` defines the following:
 | --------------- |----------------| --------------|
 | workflows | Array | Defines a list of workflows to run |
 | producers | Array | Defines a list of producers that events should be sent to |
+| customEventLoggers (optional) | Array | Defines a list of packages to scan for customs Event loggers |
 
 A `Workflow` is defined with the following properties:
 
@@ -172,7 +173,7 @@ A Kinesis Producer sends json events to the specified Kinesis stream as a String
 }
 ```
 
-By default, it will use DefaultAWSCredentialsProviderChain for the credentials. If you want to access the streams using cross-account,  use "roleARN" with the role. 
+By default, it will use DefaultAWSCredentialsProviderChain for the credentials. If you want to access the streams using cross-account,  use "roleARN" with the role.
 
 Streams can to configured differently for every step using the producerConfig config.
 
@@ -322,6 +323,18 @@ exampleSimConfig.json:
 ```
 This simulation will run four instances (same workflow rules but on different threads) of `Workflow` and send all the events to both the defined Kafka topic and to the Logger producer that put the events in to a log file.
   Use instances to create multiple traffic of the same workflow.
+
+A `Custom Event Loggers` is defined with the following properties:
+
+| Property        | Type           | Description   |
+| --------------- |----------------| --------------|
+| N/A | Array | A list of packages where custom event handlers are defined |
+
+Here is an example of a customEventLogger configuration:
+
+```
+"customEventLoggers": ["net.acesinc.log.custom"]
+```
 
 ##### Workflow Definition
 The `Workflow` is defined in seperate files to allow you to have and run multiple `Workflows` within your Simulation.  A Workflow contains the following properties:
