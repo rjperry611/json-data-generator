@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.acesinc.data.json.generator.log;
 
@@ -17,53 +17,64 @@ import com.microsoft.azure.sdk.iot.device.Message;
  */
 public final class AzureIoTHubLogger implements EventLogger {
 
-	private final DeviceClient deviceClient;
-	
-	/**
-	 * @param props
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 */
-	public AzureIoTHubLogger(final Map<String, Object> props) throws URISyntaxException, IOException {
-		
-		super();
-		
-		this.deviceClient = new DeviceClient((String)props.get("connectionString"), 
-				IotHubClientProtocol.valueOf((String)props.get("protocol")));
-		this.deviceClient.open();
-	}
-	
-	/**
-	 * @param deviceClient
-	 */
-	public AzureIoTHubLogger(final DeviceClient deviceClient) {
-		super();
-		this.deviceClient = deviceClient;
-	}
+    private DeviceClient deviceClient;
 
-	/* (non-Javadoc)
-	 * @see net.acesinc.data.json.generator.log.EventLogger#logEvent(java.lang.String, java.util.Map)
-	 */
-	@Override
-	public void logEvent(String event, Map<String, Object> producerConfig) {
-		
-		this.deviceClient.sendEventAsync(new Message(event), null, null);
-	}
+    public AzureIoTHubLogger() {
+        super();
+    }
 
-	/* (non-Javadoc)
-	 * @see net.acesinc.data.json.generator.log.EventLogger#shutdown()
-	 */
-	@Override
-	public void shutdown() {
-		
-		if (this.deviceClient != null) {
-			try {
-				this.deviceClient.closeNow();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
+    /**
+     * @param props
+     * @throws URISyntaxException
+     * @throws IOException
+     */
+    @Override
+    public void setLoggerProps(final Map<String, Object> props) throws URISyntaxException, IOException {
+        deviceClient = new DeviceClient((String) props.get("connectionString"),
+                IotHubClientProtocol.valueOf((String) props.get("protocol")));
+        deviceClient.open();
+    }
 
+    /**
+     * @param deviceClient
+     */
+    public AzureIoTHubLogger(final DeviceClient deviceClient) {
+        super();
+        this.deviceClient = deviceClient;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * net.acesinc.data.json.generator.log.EventLogger#logEvent(java.lang.String,
+     * java.util.Map)
+     */
+    @Override
+    public void logEvent(String event, Map<String, Object> producerConfig) {
+
+        deviceClient.sendEventAsync(new Message(event), null, null);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see net.acesinc.data.json.generator.log.EventLogger#shutdown()
+     */
+    @Override
+    public void shutdown() {
+        if (deviceClient != null) {
+            try {
+                deviceClient.closeNow();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public String getName() {
+        return "iothub";
+    }
 }

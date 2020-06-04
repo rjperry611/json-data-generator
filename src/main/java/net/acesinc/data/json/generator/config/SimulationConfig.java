@@ -17,16 +17,17 @@ import java.util.Map;
 public class SimulationConfig {
     private List<WorkflowConfig> workflows;
     private List<Map<String, Object>> producers;
-    
+    private List<String> customEventLoggers = new ArrayList<>();
+
     /**
      * @return the workflows
      */
     public List<WorkflowConfig> getWorkflows() {
         List<WorkflowConfig> allWorkflows = new ArrayList<>();
-        for (WorkflowConfig workflowConfig: workflows) {
+        for (WorkflowConfig workflowConfig : workflows) {
             int instanceCounter = workflowConfig.getInstances();
-            if(instanceCounter > 0) {
-                for(int i = 0 ; i<instanceCounter ; i++) {
+            if (instanceCounter > 0) {
+                for (int i = 0; i < instanceCounter; i++) {
                     allWorkflows.add(workflowConfig);
                 }
             }
@@ -45,7 +46,7 @@ public class SimulationConfig {
      * @return the producers
      */
     public List<Map<String, Object>> getProducers() {
-        return producers;
+        return this.producers;
     }
 
     /**
@@ -54,4 +55,13 @@ public class SimulationConfig {
     public void setProducers(List<Map<String, Object>> producers) {
         this.producers = producers;
     }
+
+    public List<String> getCustomEventLoggers() {
+        return this.customEventLoggers;
+    }
+
+    public void setCustomEventLoggers(List<String> customEventLoggers) {
+        this.customEventLoggers = customEventLoggers;
+    }
+
 }
